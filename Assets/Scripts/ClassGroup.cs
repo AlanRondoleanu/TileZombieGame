@@ -7,7 +7,7 @@ public class ClassGroup : MonoBehaviour
     private List<GameObject> students = new List<GameObject>();
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         foreach (Transform student in transform)
         {
@@ -24,5 +24,10 @@ public class ClassGroup : MonoBehaviour
     public List<GameObject> getStudents()
     {
         return students;
+    }
+
+    public void removeStudent(GameObject t_student)
+    {
+        students.Remove(t_student);
     }
 }

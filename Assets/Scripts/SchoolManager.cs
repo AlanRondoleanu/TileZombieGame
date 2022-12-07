@@ -5,21 +5,23 @@ using UnityEngine;
 public class SchoolManager : MonoBehaviour
 {
     public GameObject[] classes;
+    public GameObject[] schoolAreas;
     public ClassGroup[] classGroups;
 
     private List<GameObject> students = new List<GameObject>();
-    private int timer = 0;
+    private List<GameObject> zombies = new List<GameObject>();
+    private int period = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("clock", 1f, 60f);
+        InvokeRepeating("updateClasses", 1f, 30f);
+        InvokeRepeating("updateZombies", 1f, 10f);
 
-        //foreach (Transform student in schoolBoard.transform)
-        //{
-        //    students.Add(student.gameObject);
-        //}
-        //Debug.Log(students.Count);
+        foreach (ClassGroup classGroup in classGroups)
+        {
+            students.AddRange(classGroup.getStudents());
+        }
     }
 
     // Update is called once per frame
@@ -29,20 +31,8 @@ public class SchoolManager : MonoBehaviour
         {
             Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouse.z = 0;
-
-            //students[0].GetComponent<StudentMover>().setTarget(goToRoom(classes[0]));
         }
-    }
-
-    void clock()
-    {
-        timer++;
-        if (timer > 10)
-        {
-            timer = 1;
-        }
-
-        updateClasses();
+        checkForZombies();
     }
 
     public Vector3 goToRoom(GameObject t_room)
@@ -60,19 +50,101 @@ public class SchoolManager : MonoBehaviour
         for (int i = 0; i < classGroups.Length; i++)
         {
             List<GameObject> students = classGroups[i].getStudents();
-            int period = 0;
+            
+            int currentClass = i;
 
-            period = timer + i;
-            if (period > 9)
+            for (int y = 0; y < period; y++)
             {
-                period = 0;
+                currentClass++;
+
+                if (currentClass > 9)
+                {
+                    currentClass = 0;
+                }
             }
 
-            Debug.Log("Class " + (i + 1) + " to Period " + period);
+            //Debug.Log("Class " + i + " in period " + currentClass);
 
             foreach (GameObject student in students)
             {
-                student.GetComponent<StudentMover>().setTarget(goToRoom(classes[period].gameObject));
+                int bathRoomChance = Random.Range(0, 100);
+                int hungerChance = Random.Range(0, 100);
+
+                if (bathRoomChance < 5)
+                {
+                    student.GetComponent<StudentMover>().setTarget(goToRoom(schoolAreas[0]));
+                }
+                else if (hungerChance < 10)
+                {
+                    student.GetComponent<StudentMover>().setTarget(goToRoom(schoolAreas[1]));
+                }
+                else
+                {
+                    student.GetComponent<StudentMover>().setTarget(goToRoom(classes[currentClass]));
+                }
+            }
+        }
+
+        period++;
+        if (period > 9)
+        {
+            period = 0;
+        }
+    }
+
+    void updateZombies()
+    {
+        zombies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
+
+        foreach (GameObject zombie in zombies)
+        {
+            ZombieScript zScript = zombie.GetComponent<ZombieScript>();
+            ZombieMovement zMover = zombie.GetComponent<ZombieMovement>();
+
+            if (zScript.leader == true && zScript.target == null)
+            {
+                zMover.setTarget(goToRoom(classes[Random.Range(0, classes.Length)]));
+            }
+            else if (zScript.leader == false)
+            {
+                zMover.partrolling = true;
+            }
+        }
+        //zombies.Clear();
+    }
+
+    public List<GameObject> allStudents()
+    {
+        return students;
+    }
+
+    public void removeStudent(GameObject t_student)
+    {
+        students.Remove(t_student);
+
+        foreach (ClassGroup group in classGroups)
+        {
+            if (group.getStudents().Contains(t_student))
+            {
+                group.getStudents().Remove(t_student);
+            }
+        }
+
+        Destroy(t_student);
+    }
+
+    void checkForZombies()
+    {
+        foreach (GameObject student in students)
+        {
+            foreach (GameObject zombie in zombies)
+            {
+                float distance = Vector2.Distance(student.transform.position, zombie.transform.position);
+
+                if (distance < 3)
+                {
+                    student.GetComponent<StudentMover>().runAway();
+                }
             }
         }
     }

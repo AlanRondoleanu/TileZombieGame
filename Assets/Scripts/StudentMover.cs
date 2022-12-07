@@ -8,7 +8,7 @@ public class StudentMover : MonoBehaviour
     public SchoolManager school;
 
     private NavMeshAgent agent;
-    private Vector3 target;
+    private bool panic = false;
 
     // Start is called before the first frame update
     void Start()
@@ -16,18 +16,21 @@ public class StudentMover : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        agent.speed = Random.Range(1.5f, 2.5f);
     }
 
     public void setTarget(Vector3 t_target)
     {
-        target = t_target;
         agent.SetDestination(t_target);
+    }
+
+    public void runAway()
+    {
+        if (panic == false)
+        {
+            agent.speed = Random.Range(3.0f, 4.0f);
+            panic = true;
+        }
     }
 
 }
