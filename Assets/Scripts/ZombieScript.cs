@@ -5,25 +5,29 @@ using UnityEngine;
 public class ZombieScript : MonoBehaviour
 {
     public float knockback;
-    public SchoolManager school;
     public GameObject player;
     public GameObject prefabZombie;
     public GameObject target;
     public int aggroRange = 3;
     public bool leader = false;
+    public int lives = 3;
+    public AudioClip[] zombieSounds;
 
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private bool hit = false;
     private bool chasing = false;
     private ZombieMovement movement;
-    
-    
+    private AudioSource audioSrcs;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         movement = GetComponent<ZombieMovement>();
+        audioSrcs = GetComponent<AudioSource>();
+
+        InvokeRepeating("zombieSound", 8, 8);
     }
 
     void Update()
@@ -54,6 +58,17 @@ public class ZombieScript : MonoBehaviour
             rb.AddForce(dir * knockback);
             sprite.color = Color.red;
             hit = true;
+            lives--;
+
+            // Audio
+            zombieSound();
+
+            if (lives <= 0)
+            {
+                // Kills and passes the leader role
+                SchoolManager.instance.PassLeaderRole(gameObject);
+                Destroy(gameObject);
+            }
         }
 
         if (collision.gameObject.tag == "Student")
@@ -63,7 +78,18 @@ public class ZombieScript : MonoBehaviour
             zombie.GetComponent<ZombieMovement>().leader = gameObject;
             zombie.GetComponent<ZombieScript>().leader = false;
 
-            school.removeStudent(collision.gameObject);
+            SchoolManager.instance.removeStudent(collision.gameObject);
+        }
+
+        if (collision.gameObject.tag == "Player" && player.GetComponent<PlayerScript>().alive == true)
+        {
+            GameObject zombie = Instantiate(prefabZombie, collision.transform.position, Quaternion.identity);
+
+            zombie.GetComponent<ZombieMovement>().leader = gameObject;
+            zombie.GetComponent<ZombieScript>().leader = false;
+
+            player.GetComponent<PlayerScript>().killPlayer();
+            Destroy(player);
         }
     }
 
@@ -72,7 +98,7 @@ public class ZombieScript : MonoBehaviour
         // Find Student Target if no target is selected
         if (chasing == false)
         {
-            foreach (GameObject student in school.allStudents())
+            foreach (GameObject student in SchoolManager.instance.allStudents())
             {
                 float distance = Vector2.Distance(transform.position, student.transform.position);
 
@@ -86,7 +112,7 @@ public class ZombieScript : MonoBehaviour
         }
 
         // Find Player target if one is selected
-        if (true)
+        if (player != null)
         {
             float distance = Vector2.Distance(transform.position, player.transform.position);
 
@@ -114,5 +140,27 @@ public class ZombieScript : MonoBehaviour
     public void setChasing(bool t_active)
     {
         chasing = t_active;
+    }
+
+    void zombieSound()
+    {
+        float distance = Vector2.Distance(transform.position, player.transform.position);
+        const float MAX_DISTANCE = 10.0f;
+
+        if (distance < MAX_DISTANCE)
+        {
+            float volume = 1.0f - ((distance / MAX_DISTANCE) * 1.0f);
+
+            if (volume > 1.0f)
+            {
+                volume = 0;
+            }
+
+            // Scale volume
+            volume *= 0.5f;
+
+            audioSrcs.volume = volume;
+            audioSrcs.PlayOneShot(zombieSounds[Random.Range(0, zombieSounds.Length)]);
+        }
     }
 }

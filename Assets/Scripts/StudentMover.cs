@@ -5,8 +5,6 @@ using UnityEngine.AI;
 
 public class StudentMover : MonoBehaviour
 {
-    public SchoolManager school;
-
     private NavMeshAgent agent;
     private bool panic = false;
 

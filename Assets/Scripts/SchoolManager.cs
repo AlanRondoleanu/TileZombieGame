@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SchoolManager : MonoBehaviour
 {
+    public static SchoolManager instance;
+
     public GameObject[] classes;
     public GameObject[] schoolAreas;
     public ClassGroup[] classGroups;
@@ -12,11 +14,22 @@ public class SchoolManager : MonoBehaviour
     private List<GameObject> zombies = new List<GameObject>();
     private int period = 0;
 
-    // Start is called before the first frame update
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     void Start()
     {
         InvokeRepeating("updateClasses", 1f, 30f);
-        InvokeRepeating("updateZombies", 1f, 10f);
+        InvokeRepeating("updateZombies", 1f, 3f);
 
         foreach (ClassGroup classGroup in classGroups)
         {
@@ -24,7 +37,6 @@ public class SchoolManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -62,8 +74,6 @@ public class SchoolManager : MonoBehaviour
                     currentClass = 0;
                 }
             }
-
-            //Debug.Log("Class " + i + " in period " + currentClass);
 
             foreach (GameObject student in students)
             {
@@ -110,7 +120,6 @@ public class SchoolManager : MonoBehaviour
                 zMover.partrolling = true;
             }
         }
-        //zombies.Clear();
     }
 
     public List<GameObject> allStudents()
@@ -139,12 +148,31 @@ public class SchoolManager : MonoBehaviour
         {
             foreach (GameObject zombie in zombies)
             {
-                float distance = Vector2.Distance(student.transform.position, zombie.transform.position);
-
-                if (distance < 3)
+                if (zombie != null)
                 {
-                    student.GetComponent<StudentMover>().runAway();
+                    float distance = Vector2.Distance(student.transform.position, zombie.transform.position);
+
+                    if (distance < 3)
+                    {
+                        student.GetComponent<StudentMover>().runAway();
+                    }
                 }
+            }
+        }
+    }
+
+    public void PassLeaderRole(GameObject t_zombieToRemove)
+    {
+        zombies.Remove(t_zombieToRemove);
+
+        foreach (GameObject zombie in zombies)
+        {
+            ZombieScript zs = zombie.GetComponent<ZombieScript>();
+
+            if (zs.leader == false)
+            {
+                zs.leader = true;
+                break;
             }
         }
     }
