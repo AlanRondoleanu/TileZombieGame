@@ -7,6 +7,7 @@ public class ZombieMovement : MonoBehaviour
 {
     public GameObject leader;
     public bool partrolling = true;
+    public GameObject body;
 
     private NavMeshAgent agent;
     private ZombieScript zScript;
@@ -23,7 +24,7 @@ public class ZombieMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (leader != null && partrolling)
+        if (leader != null && partrolling && zScript.hit == false)
         {
             agent.SetDestination(leader.transform.position);
         }
@@ -35,13 +36,15 @@ public class ZombieMovement : MonoBehaviour
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
         }
+
+        // Keep Child spites rotated correctly
+        body.transform.rotation = Quaternion.identity;
     }
 
     public void setTarget(Vector3 t_target)
     {
         agent.SetDestination(t_target);
         partrolling = false;
-        zScript.setChasing(false);
     }
 
 

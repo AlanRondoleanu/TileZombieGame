@@ -43,6 +43,23 @@ public class PlayerScript : MonoBehaviour
             // Camera position
             Vector3 camPos = new Vector3(transform.position.x, transform.position.y, -10);
             mainCam.transform.position = camPos;
+
+            // Flip Image
+            if (xMove > 0)
+            {
+                Vector3 scale = transform.localScale;
+                scale.x = -1;
+
+                transform.localScale = scale;
+            }
+            else if (xMove < 0)
+            {
+                Vector3 scale = transform.localScale;
+                scale.x = +1;
+
+                transform.localScale = scale;
+            }
+
         }
     }
 

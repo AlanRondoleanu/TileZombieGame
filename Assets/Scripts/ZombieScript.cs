@@ -12,18 +12,17 @@ public class ZombieScript : MonoBehaviour
     public bool leader = false;
     public int lives = 3;
     public AudioClip[] zombieSounds;
+    public bool hit = false;
 
     private Rigidbody2D rb;
-    private SpriteRenderer sprite;
-    private bool hit = false;
-    private bool chasing = false;
     private ZombieMovement movement;
     private AudioSource audioSrcs;
+    private SpriteRenderer[] renderers;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
+        renderers = GetComponentsInChildren<SpriteRenderer>();
         movement = GetComponent<ZombieMovement>();
         audioSrcs = GetComponent<AudioSource>();
 
@@ -34,12 +33,15 @@ public class ZombieScript : MonoBehaviour
     {
         if (hit)
         {
-            Color flash = new Color(0, 0.01f, 0.01f, 0);
-            sprite.color += flash;
-
-            if (sprite.color == Color.white)
+            foreach (SpriteRenderer renderer in renderers)
             {
-                hit = false;
+                Color flash = new Color(0, 0.01f, 0.01f, 0);
+                renderer.color += flash;
+
+                if (renderer.color == Color.white)
+                {
+                    hit = false;
+                }
             }
         }
         else
@@ -52,17 +54,25 @@ public class ZombieScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
-            Vector3 dir = player.transform.position - transform.position;
-            dir = -dir.normalized;
-
-            rb.AddForce(dir * knockback);
-            sprite.color = Color.red;
+            // Took Damage
             hit = true;
             lives--;
 
+            // Pushback
+            Vector3 dir = player.transform.position - transform.position;
+            dir = -dir.normalized;
+            rb.AddForce(dir * knockback);
+
+            // Highlight Damage
+            foreach (SpriteRenderer renderer in renderers)
+            {
+                renderer.color = Color.red;
+            }
+   
             // Audio
             zombieSound();
 
+            // Death event
             if (lives <= 0)
             {
                 // Kills and passes the leader role
@@ -96,7 +106,6 @@ public class ZombieScript : MonoBehaviour
     public void SetTarget(GameObject t_target)
     {
         target = t_target;
-        chasing = true;
     }
 
     void moveTowardsTargets()
@@ -108,16 +117,10 @@ public class ZombieScript : MonoBehaviour
             // Stops chasing if out of range
             if (Vector2.Distance(transform.position, target.transform.position) > aggroRange + 1)
             {
-                chasing = false;
                 target = null;
                 movement.partrolling = true;
             }
         }
-    }
-
-    public void setChasing(bool t_active)
-    {
-        chasing = t_active;
     }
 
     void zombieSound()
