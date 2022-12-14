@@ -40,6 +40,7 @@ public class PlayerScript : MonoBehaviour
                 Instantiate(shot, transform.position, transform.rotation);
             }
 
+            // Camera position
             Vector3 camPos = new Vector3(transform.position.x, transform.position.y, -10);
             mainCam.transform.position = camPos;
         }

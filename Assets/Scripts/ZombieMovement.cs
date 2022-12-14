@@ -27,6 +27,14 @@ public class ZombieMovement : MonoBehaviour
         {
             agent.SetDestination(leader.transform.position);
         }
+
+        // Rotate Character
+        Vector3 moveDirection = agent.velocity;
+        if (moveDirection != Vector3.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+        }
     }
 
     public void setTarget(Vector3 t_target)

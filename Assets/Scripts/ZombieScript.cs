@@ -44,7 +44,7 @@ public class ZombieScript : MonoBehaviour
         }
         else
         {
-            findNearestTarget();
+            moveTowardsTargets();
         }
     }
 
@@ -93,36 +93,14 @@ public class ZombieScript : MonoBehaviour
         }
     }
 
-    void findNearestTarget()
+    public void SetTarget(GameObject t_target)
     {
-        // Find Student Target if no target is selected
-        if (chasing == false)
-        {
-            foreach (GameObject student in SchoolManager.instance.allStudents())
-            {
-                float distance = Vector2.Distance(transform.position, student.transform.position);
+        target = t_target;
+        chasing = true;
+    }
 
-                if (distance < aggroRange)
-                {
-                    target = student;
-                    chasing = true;
-                    break;
-                }
-            }
-        }
-
-        // Find Player target if one is selected
-        if (player != null)
-        {
-            float distance = Vector2.Distance(transform.position, player.transform.position);
-
-            if (distance < aggroRange)
-            {
-                target = player;
-                chasing = true;
-            }
-        }
-
+    void moveTowardsTargets()
+    {
         if (target != null)
         {
             movement.setTarget(target.transform.position);
@@ -144,23 +122,26 @@ public class ZombieScript : MonoBehaviour
 
     void zombieSound()
     {
-        float distance = Vector2.Distance(transform.position, player.transform.position);
-        const float MAX_DISTANCE = 10.0f;
-
-        if (distance < MAX_DISTANCE)
+        if (player != null)
         {
-            float volume = 1.0f - ((distance / MAX_DISTANCE) * 1.0f);
+            float distance = Vector2.Distance(transform.position, player.transform.position);
+            const float MAX_DISTANCE = 10.0f;
 
-            if (volume > 1.0f)
+            if (distance < MAX_DISTANCE)
             {
-                volume = 0;
+                float volume = 1.0f - ((distance / MAX_DISTANCE) * 1.0f);
+
+                if (volume > 1.0f)
+                {
+                    volume = 0;
+                }
+
+                // Scale volume
+                volume *= 0.5f;
+
+                audioSrcs.volume = volume;
+                audioSrcs.PlayOneShot(zombieSounds[Random.Range(0, zombieSounds.Length)]);
             }
-
-            // Scale volume
-            volume *= 0.5f;
-
-            audioSrcs.volume = volume;
-            audioSrcs.PlayOneShot(zombieSounds[Random.Range(0, zombieSounds.Length)]);
         }
     }
 }

@@ -108,16 +108,19 @@ public class SchoolManager : MonoBehaviour
 
         foreach (GameObject zombie in zombies)
         {
-            ZombieScript zScript = zombie.GetComponent<ZombieScript>();
-            ZombieMovement zMover = zombie.GetComponent<ZombieMovement>();
+            if (zombie != null)
+            {
+                ZombieScript zScript = zombie.GetComponent<ZombieScript>();
+                ZombieMovement zMover = zombie.GetComponent<ZombieMovement>();
 
-            if (zScript.leader == true && zScript.target == null)
-            {
-                zMover.setTarget(goToRoom(classes[Random.Range(0, classes.Length)]));
-            }
-            else if (zScript.leader == false)
-            {
-                zMover.partrolling = true;
+                if (zScript.leader == true && zScript.target == null)
+                {
+                    zMover.setTarget(goToRoom(classes[Random.Range(0, classes.Length)]));
+                }
+                else if (zScript.leader == false)
+                {
+                    zMover.partrolling = true;
+                }
             }
         }
     }
@@ -167,12 +170,15 @@ public class SchoolManager : MonoBehaviour
 
         foreach (GameObject zombie in zombies)
         {
-            ZombieScript zs = zombie.GetComponent<ZombieScript>();
-
-            if (zs.leader == false)
+            if (zombie != null)
             {
-                zs.leader = true;
-                break;
+                ZombieScript zs = zombie.GetComponent<ZombieScript>();
+
+                if (zs.leader == false)
+                {
+                    zs.leader = true;
+                    break;
+                }
             }
         }
     }

@@ -25,14 +25,9 @@ public class BulletScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag != "Player" && collision.gameObject.tag != "Window")
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Enemy")
         {
             Destroy(gameObject);
-        }
-
-        if (collision.gameObject.tag == "Window")
-        {
-            // Game Sound?
         }
     }
 }
