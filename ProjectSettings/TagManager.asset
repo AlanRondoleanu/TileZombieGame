@@ -9,6 +9,7 @@ TagManager:
   - Student
   - Window
   - Wall
+  - Shadow
   layers:
   - Default
   - TransparentFX

@@ -247,3 +247,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 30
+  shatterSound: {fileID: 4351712095469137754, guid: 93068bca475bf874d9bbd9e68eb62391, type: 3}

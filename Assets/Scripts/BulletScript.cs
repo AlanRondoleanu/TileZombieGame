@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletScript : MonoBehaviour
 {
     public float speed;
+    public GameObject shatterSound;
 
     private GameObject player;
     private Camera mainCam;
@@ -25,6 +26,11 @@ public class BulletScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.tag == "Window")
+        {
+            Instantiate(shatterSound);
+        }
+
         if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Enemy")
         {
             Destroy(gameObject);

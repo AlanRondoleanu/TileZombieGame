@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ZombieScript : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class ZombieScript : MonoBehaviour
     public bool leader = false;
     public int lives = 3;
     public AudioClip[] zombieSounds;
+    public AudioClip footstep;
     public bool hit = false;
 
     private Rigidbody2D rb;
     private ZombieMovement movement;
     private AudioSource audioSrcs;
     private SpriteRenderer[] renderers;
+    private UnityEngine.AI.NavMeshAgent agent;
+
+    private float footstepRate = 0.3f;
+    private float nextStep;
 
     void Start()
     {
@@ -25,6 +31,9 @@ public class ZombieScript : MonoBehaviour
         renderers = GetComponentsInChildren<SpriteRenderer>();
         movement = GetComponent<ZombieMovement>();
         audioSrcs = GetComponent<AudioSource>();
+        agent = GetComponent<NavMeshAgent>();
+
+        audioSrcs.volume = 0.5f;
 
         InvokeRepeating("zombieSound", 8, 8);
     }
@@ -47,6 +56,16 @@ public class ZombieScript : MonoBehaviour
         else
         {
             moveTowardsTargets();
+        }
+
+        setVolumeDistance();
+
+        // Footstep Sounds
+        Vector3 moveDirection = agent.velocity;
+        if (Time.time > nextStep && moveDirection != Vector3.zero)
+        {
+            nextStep = Time.time + footstepRate;
+            audioSrcs.PlayOneShot(footstep);
         }
     }
 
@@ -125,6 +144,11 @@ public class ZombieScript : MonoBehaviour
 
     void zombieSound()
     {
+        audioSrcs.PlayOneShot(zombieSounds[Random.Range(0, zombieSounds.Length)]);
+    }
+
+    void setVolumeDistance()
+    {
         if (player != null)
         {
             float distance = Vector2.Distance(transform.position, player.transform.position);
@@ -140,11 +164,18 @@ public class ZombieScript : MonoBehaviour
                 }
 
                 // Scale volume
-                volume *= 0.5f;
+                volume *= 0.3f;
 
                 audioSrcs.volume = volume;
-                audioSrcs.PlayOneShot(zombieSounds[Random.Range(0, zombieSounds.Length)]);
             }
+            else
+            {
+                audioSrcs.volume = 0;
+            }
+        }
+        else
+        {
+            audioSrcs.volume = 0;
         }
     }
 }

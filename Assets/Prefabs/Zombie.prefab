@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092954191905252941}
   m_LocalRotation: {x: -0, y: -0, z: 0.32073134, w: 0.94717026}
-  m_LocalPosition: {x: -0.028, y: -0.115, z: 0}
+  m_LocalPosition: {x: -0.028, y: -0.029, z: 0}
   m_LocalScale: {x: 0.07000001, y: 0.07000001, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 2488109711107158619}
   - component: {fileID: 2488109711107158617}
   - component: {fileID: 1390279440283287821}
+  - component: {fileID: -3049316523227464096}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Enemy
@@ -116,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 2488109711107158608}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1710913159928893687}
@@ -204,7 +205,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.193
+  m_Volume: 0.45
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -318,6 +319,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c86e47f706632024594890049b294aa8, type: 3}
   - {fileID: 8300000, guid: 76e8874bafc538743a0078911f0045a0, type: 3}
   - {fileID: 8300000, guid: f19af66adbde5e142a14a1619c403505, type: 3}
+  footstep: {fileID: 8300000, guid: 83a4031a92e89a347abc8cba8ec6bb20, type: 3}
   hit: 0
 --- !u!114 &2488109711107158617
 MonoBehaviour:
@@ -355,6 +357,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   visibleTargets: []
+--- !u!95 &-3049316523227464096
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488109711107158608}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 60d2106d768b86e42a8e100481ba5489, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3082921301388440447
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,7 +402,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082921301388440447}
   m_LocalRotation: {x: -0, y: -0, z: 0.2706814, w: 0.962669}
-  m_LocalPosition: {x: -0.052, y: -0.116, z: 0}
+  m_LocalPosition: {x: -0.041, y: -0.025, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -464,7 +486,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4091258703117377687}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.044, y: 0.177, z: 0}
+  m_LocalPosition: {x: -0.027, y: 0.108, z: 0}
   m_LocalScale: {x: 0.059999995, y: 0.059999995, z: 0.059999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -585,7 +607,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6943957269205236227}
   m_LocalRotation: {x: -0, y: -0, z: 0.120094724, w: 0.9927625}
-  m_LocalPosition: {x: -0.011, y: 0.06, z: 0}
+  m_LocalPosition: {x: -0.037, y: -0.032, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -669,7 +691,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7283851164186867588}
   m_LocalRotation: {x: -0, y: -0, z: 0.049483147, w: 0.998775}
-  m_LocalPosition: {x: -0.044, y: 0.063, z: 0}
+  m_LocalPosition: {x: -0.006, y: 0.08, z: 0}
   m_LocalScale: {x: 0.06, y: 0.06, z: 0.059999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -753,7 +775,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7613914017264402785}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.133, y: 0.045, z: 0}
+  m_LocalPosition: {x: -0.084, y: 0.064, z: 0}
   m_LocalScale: {x: 0.059999995, y: 0.059999995, z: 0.059999995}
   m_ConstrainProportionsScale: 1
   m_Children: []

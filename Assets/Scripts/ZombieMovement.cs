@@ -11,6 +11,7 @@ public class ZombieMovement : MonoBehaviour
 
     private NavMeshAgent agent;
     private ZombieScript zScript;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class ZombieMovement : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         zScript = GetComponent<ZombieScript>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -29,16 +31,36 @@ public class ZombieMovement : MonoBehaviour
             agent.SetDestination(leader.transform.position);
         }
 
-        // Rotate Character
         Vector3 moveDirection = agent.velocity;
         if (moveDirection != Vector3.zero)
         {
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+            animator.SetInteger("AnimState", 1);
+        }
+        else
+        {
+            animator.SetInteger("AnimState", 0);
         }
 
         // Keep Child spites rotated correctly
         body.transform.rotation = Quaternion.identity;
+
+        // Flip Image
+        if (moveDirection.x > 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = -2f;
+
+            transform.localScale = scale;
+        }
+        else if (moveDirection.x < 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = +2f;
+
+            transform.localScale = scale;
+        }
     }
 
     public void setTarget(Vector3 t_target)

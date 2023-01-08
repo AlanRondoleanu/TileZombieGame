@@ -1,14 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SchoolManager : MonoBehaviour
 {
     public static SchoolManager instance;
 
+    // Text
+    public TMP_Text gameOver;
+    public TMP_Text win;
+    public TMP_Text studentsCount;
+    public TMP_Text zombiesCount;
+    public GameObject button;
+
     public GameObject[] classes;
     public GameObject[] schoolAreas;
     public ClassGroup[] classGroups;
+    public GameObject player;
 
     private List<GameObject> students = new List<GameObject>();
     private List<GameObject> zombies = new List<GameObject>();
@@ -45,6 +55,14 @@ public class SchoolManager : MonoBehaviour
             mouse.z = 0;
         }
         checkForZombies();
+
+        if (player == null)
+        {
+            gameOver.gameObject.SetActive(true);
+        }
+
+        studentsCount.text = "Students: " + students.Count;
+        zombiesCount.text = "Zombies: " + zombies.Count;
     }
 
     public Vector3 goToRoom(GameObject t_room)
@@ -104,7 +122,16 @@ public class SchoolManager : MonoBehaviour
 
     void updateZombies()
     {
+        zombies.Clear();
+        students.Clear();
         zombies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
+        students.AddRange(GameObject.FindGameObjectsWithTag("Student"));
+
+        if (zombies.Count <= 0)
+        {
+            win.gameObject.SetActive(true);
+            button.gameObject.SetActive(true);
+        }
 
         foreach (GameObject zombie in zombies)
         {
@@ -181,5 +208,10 @@ public class SchoolManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void replay()
+    {
+        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 }

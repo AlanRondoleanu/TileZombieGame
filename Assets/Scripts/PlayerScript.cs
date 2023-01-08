@@ -14,10 +14,15 @@ public class PlayerScript : MonoBehaviour
     private float nextFire;
     private Camera mainCam;
     private AudioSource audioSrcs;
+    private Animator animator;
+
+    private float footstepRate = 0.3f;
+    private float nextStep;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         mainCam = Camera.main;
         audioSrcs = GetComponent<AudioSource>();
     }
@@ -29,12 +34,33 @@ public class PlayerScript : MonoBehaviour
             float xMove = Input.GetAxisRaw("Horizontal");
             float zMove = Input.GetAxisRaw("Vertical");
 
+            // Animation
+            if (xMove != 0 || zMove != 0)
+            {
+                animator.SetInteger("AnimState", 1);
+
+                // Footstep Sounds
+                if (Time.time > nextStep)
+                {
+                    nextStep = Time.time + footstepRate;
+                    audioSrcs.volume = 0.3f;
+                    audioSrcs.PlayOneShot(sounds[1]);
+                }
+            }
+            else
+            {
+                animator.SetInteger("AnimState", 0);
+            }
+
             rb.velocity = new Vector2(xMove, zMove) * speed;
 
             // Fires bullets
             if (Input.GetKey(KeyCode.Mouse0) && Time.time > nextFire)
             {
                 nextFire = Time.time + fireRate;
+
+                // Animation for shooting
+                animator.SetInteger("AnimState", 2);
 
                 audioSrcs.PlayOneShot(sounds[0]);
                 Instantiate(shot, transform.position, transform.rotation);
@@ -48,14 +74,14 @@ public class PlayerScript : MonoBehaviour
             if (xMove > 0)
             {
                 Vector3 scale = transform.localScale;
-                scale.x = -1;
+                scale.x = -2f;
 
                 transform.localScale = scale;
             }
             else if (xMove < 0)
             {
                 Vector3 scale = transform.localScale;
-                scale.x = +1;
+                scale.x = +2f;
 
                 transform.localScale = scale;
             }
