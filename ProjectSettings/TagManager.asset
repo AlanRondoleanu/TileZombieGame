@@ -53,6 +53,9 @@ TagManager:
   - name: Walls
     uniqueID: 1789357545
     locked: 0
+  - name: Students
+    uniqueID: 3220477239
+    locked: 0
   - name: Player
     uniqueID: 3203460719
     locked: 0
